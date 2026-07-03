@@ -1,7 +1,8 @@
 import axios from "axios";
 
-const API_URL = "http://localhost:5000/api/products";
-const BASE_URL = API_URL.replace("/api/products", "");
+const apiBase = import.meta.env.VITE_API_URL?.trim().replace(/\/$/, "") || "";
+const API_URL = `${apiBase}/api/products`;
+const UPLOAD_URL = `${apiBase}/api/upload`;
 
 export const getAllProducts = async () => {
   const response = await axios.get(API_URL);
@@ -24,7 +25,7 @@ export const deleteProduct = async (id) => {
 };
 
 export const uploadImages = async (formData) => {
-  const response = await axios.post(`${BASE_URL}/api/upload`, formData, {
+  const response = await axios.post(UPLOAD_URL, formData, {
     headers: { "Content-Type": "multipart/form-data" },
   });
   return response.data; // array of urls
