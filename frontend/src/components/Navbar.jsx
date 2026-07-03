@@ -37,11 +37,6 @@ function Navbar() {
           </Link>
         </li>
         <li>
-          <Link to="/cart" onClick={() => setIsOpen(false)}>
-            Cart ({cartCount})
-          </Link>
-        </li>
-        <li>
           <Link to="/about" onClick={() => setIsOpen(false)}>
             About
           </Link>
