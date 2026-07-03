@@ -30,8 +30,6 @@ export const deleteProduct = async (id) => {
 };
 
 export const uploadImages = async (formData) => {
-  const response = await axios.post(UPLOAD_URL, formData, {
-    headers: { "Content-Type": "multipart/form-data" },
-  });
+  const response = await axios.post(UPLOAD_URL, formData);
   return response.data; // array of urls
 };

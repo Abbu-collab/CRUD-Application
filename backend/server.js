@@ -8,6 +8,8 @@ const fs = require("fs");
 const multer = require("multer");
 const app = express();
 
+app.set("trust proxy", true);
+
 connectDB();
 app.use(cors());
 app.use(express.json());
@@ -43,7 +45,12 @@ app.post("/api/upload", upload.array("images", 10), (req, res) => {
     }
 
     console.log("Uploaded files:", req.files.map((f) => f.filename));
-    const host = req.protocol + "://" + req.get("host");
+    let protocol = req.get("x-forwarded-proto") || req.protocol;
+    const hostName = req.get("host");
+    if (/\.onrender\.com$/i.test(hostName)) {
+      protocol = "https";
+    }
+    const host = `${protocol}://${hostName}`;
     const urls = req.files.map((f) => `${host}/images/${f.filename}`);
     return res.status(201).json(urls);
   } catch (err) {

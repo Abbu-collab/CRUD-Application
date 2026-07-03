@@ -6,13 +6,14 @@ const isMongoUnavailable = (error) =>
 
 const createProduct = async (req, res) => {
   try {
-    const { name, price, category, description } = req.body;
+    const { name, price, category, description, images } = req.body;
 
     const newProduct = await Product.create({
       name,
       price,
       category,
       description,
+      images: Array.isArray(images) ? images : [],
     });
 
     res.status(201).json(newProduct);

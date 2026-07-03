@@ -1,31 +1,55 @@
+import { useState } from "react";
 import { Link } from "react-router-dom";
 import { useCart } from "../context/CartContext";
 
 function Navbar() {
+  const [isOpen, setIsOpen] = useState(false);
   const { cartItems } = useCart();
   const cartCount = cartItems.reduce((sum, item) => sum + item.quantity, 0);
 
   return (
     <nav className="navbar">
       <div className="nav-brand">ProductHub</div>
-      <ul className="nav-links">
+      <button
+        className={`nav-toggle ${isOpen ? "open" : ""}`}
+        onClick={() => setIsOpen((prev) => !prev)}
+        aria-label="Toggle navigation menu"
+        type="button"
+      >
+        <span />
+        <span />
+        <span />
+      </button>
+      <ul className={`nav-links ${isOpen ? "open" : ""}`}>
         <li>
-          <Link to="/">Home</Link>
+          <Link to="/" onClick={() => setIsOpen(false)}>
+            Home
+          </Link>
         </li>
         <li>
-          <Link to="/view-products">View Products</Link>
+          <Link to="/view-products" onClick={() => setIsOpen(false)}>
+            View Products
+          </Link>
         </li>
         <li>
-          <Link to="/add-product">Add Product</Link>
+          <Link to="/add-product" onClick={() => setIsOpen(false)}>
+            Add Product
+          </Link>
         </li>
         <li>
-          <Link to="/cart">Cart ({cartCount})</Link>
+          <Link to="/cart" onClick={() => setIsOpen(false)}>
+            Cart ({cartCount})
+          </Link>
         </li>
         <li>
-          <Link to="/about">About</Link>
+          <Link to="/about" onClick={() => setIsOpen(false)}>
+            About
+          </Link>
         </li>
         <li>
-          <Link to="/contact">Contact</Link>
+          <Link to="/contact" onClick={() => setIsOpen(false)}>
+            Contact
+          </Link>
         </li>
       </ul>
     </nav>

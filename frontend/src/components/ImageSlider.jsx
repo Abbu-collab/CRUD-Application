@@ -2,7 +2,7 @@ import { useState } from "react";
 
 const envBackend = import.meta.env.VITE_API_URL?.trim().replace(/\/$/, "");
 const BACKEND_BASE = envBackend ||
-  (typeof window !== "undefined" ? window.location.origin : "http://localhost:5000");
+  (typeof window !== "undefined" ? window.location.origin : "https://crud-application-yhki.onrender.com");
 const FALLBACK_IMAGE = "https://via.placeholder.com/300?text=No+Image";
 
 function ImageSlider({ images }) {
@@ -15,7 +15,7 @@ function ImageSlider({ images }) {
 
   const resolveSrc = (img) => {
     if (!img) return FALLBACK_IMAGE;
-    const trimmed = String(img).trim();
+    let trimmed = String(img).trim();
     if (
       trimmed.startsWith("http://") ||
       trimmed.startsWith("https://") ||
@@ -23,6 +23,12 @@ function ImageSlider({ images }) {
       trimmed.startsWith("//") ||
       trimmed.startsWith("/")
     ) {
+      if (trimmed.startsWith("http://crud-application-yhki.onrender.com")) {
+        trimmed = trimmed.replace(
+          "http://crud-application-yhki.onrender.com",
+          "https://crud-application-yhki.onrender.com",
+        );
+      }
       return trimmed;
     }
 
