@@ -36,7 +36,7 @@ function ProductForm({ editingProduct, onFormDone }) {
 
     if (!name.trim() || !price || !category.trim()) {
       alert(
-        "Please fill in Name, Price, and Category — these fields are required.",
+        "Please fill in Name, Price, and Category — these fields are required."
       );
       return;
     }
@@ -49,37 +49,15 @@ function ProductForm({ editingProduct, onFormDone }) {
     try {
       const imageArray = images
         .split(",")
-        .map((url) => {
-          const t = url.trim();
-          if (!t) return "";
-          // keep absolute or data URLs as-is
-          if (
-            t.startsWith("http://") ||
-            t.startsWith("https://") ||
-            t.startsWith("data:") ||
-            t.startsWith("//") ||
-            t.startsWith("/")
-          ) {
-            return t;
-          }
-          // If user provided 'www.example.com/..' or bare domain, assume https
-          if (/^www\./i.test(t) || /^[a-z0-9.-]+\.[a-z]{2,}/i.test(t)) {
-            return "https://" + t;
-          }
-          return t;
-        })
+        .map((url) => url.trim())
         .filter((url) => url.length > 0);
 
       let uploadedUrls = [];
       if (selectedFiles && selectedFiles.length > 0) {
-        const formData = new FormData();
-        for (let i = 0; i < selectedFiles.length; i++) {
-          formData.append("images", selectedFiles[i]);
-        }
-        uploadedUrls = await uploadImages(formData);
+        uploadedUrls = await uploadImages(Array.from(selectedFiles));
         if (!uploadedUrls || uploadedUrls.length === 0) {
           alert(
-            "Image upload failed or returned no URLs. Product not updated with local images.",
+            "Image upload failed or returned no URLs. Product not updated with local images."
           );
         }
       }
@@ -151,7 +129,7 @@ function ProductForm({ editingProduct, onFormDone }) {
       </div>
 
       <div>
-        <label>Image URL:</label>
+        <label>Image URLs (optional, comma-separated):</label>
         <textarea
           value={images}
           onChange={(e) => setImages(e.target.value)}
@@ -160,7 +138,7 @@ function ProductForm({ editingProduct, onFormDone }) {
       </div>
 
       <div>
-        <label>Or upload local images:</label>
+        <label>Or upload images from your computer:</label>
         <input
           type="file"
           multiple

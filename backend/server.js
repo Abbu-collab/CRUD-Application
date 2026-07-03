@@ -45,13 +45,8 @@ app.post("/api/upload", upload.array("images", 10), (req, res) => {
     }
 
     console.log("Uploaded files:", req.files.map((f) => f.filename));
-    let protocol = req.get("x-forwarded-proto") || req.protocol;
-    const hostName = req.get("host");
-    if (/\.onrender\.com$/i.test(hostName)) {
-      protocol = "https";
-    }
-    const host = `${protocol}://${hostName}`;
-    const urls = req.files.map((f) => `${host}/images/${f.filename}`);
+    // Return relative URLs so they work on any domain/port
+    const urls = req.files.map((f) => `/images/${f.filename}`);
     return res.status(201).json(urls);
   } catch (err) {
     console.error("Error handling upload:", err);

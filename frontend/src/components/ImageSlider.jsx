@@ -1,128 +1,46 @@
-import { useState } from "react";
-
-const envBackend = import.meta.env.VITE_API_URL?.trim().replace(/\/$/, "");
-const BACKEND_BASE = envBackend ||
-  (typeof window !== "undefined" ? window.location.origin : "https://crud-application-yhki.onrender.com");
-const FALLBACK_IMAGE = "https://via.placeholder.com/300?text=No+Image";
+import { useState, useEffect } from 'react';
 
 function ImageSlider({ images }) {
   const [current, setCurrent] = useState(0);
-  const [failedIndexes, setFailedIndexes] = useState(new Set());
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  useEffect(() => {
+    if (!images || images.length <= 1) return;
+
+    const interval = setInterval(() => {
+      setCurrent((prev) => (prev === images.length - 1 ? 0 : prev + 1));
+    }, 2000);
+
+    return () => clearInterval(interval);
+  }, [images]);
 
   if (!images || images.length === 0) {
     return <div className="no-image">No Image</div>;
   }
 
-  const resolveSrc = (img) => {
-    if (!img) return FALLBACK_IMAGE;
-    let trimmed = String(img).trim();
-    if (
-      trimmed.startsWith("http://") ||
-      trimmed.startsWith("https://") ||
-      trimmed.startsWith("data:") ||
-      trimmed.startsWith("//") ||
-      trimmed.startsWith("/")
-    ) {
-      if (trimmed.startsWith("http://crud-application-yhki.onrender.com")) {
-        trimmed = trimmed.replace(
-          "http://crud-application-yhki.onrender.com",
-          "https://crud-application-yhki.onrender.com",
-        );
-      }
-      return trimmed;
-    }
-
-    // Support URLs starting with www.example.com (no scheme)
-    if (/^www\./i.test(trimmed) || /^[a-z0-9.-]+\.[a-z]{2,}/i.test(trimmed)) {
-      return "https://" + trimmed;
-    }
-
-    return BACKEND_BASE + trimmed;
-  };
-
-  const handleError = (index, e) => {
-    setFailedIndexes((prev) => new Set(prev).add(index));
-    e.target.src = FALLBACK_IMAGE;
-    console.warn(
-      "Image failed to load, using fallback for index",
-      index,
-      e.target.src,
-    );
-  };
-
-  const goPrev = () => {
-    setCurrent((prev) => (prev === 0 ? images.length - 1 : prev - 1));
-  };
-
-  const goNext = () => {
-    setCurrent((prev) => (prev === images.length - 1 ? 0 : prev + 1));
-  };
-
-  const src = failedIndexes.has(current)
-    ? FALLBACK_IMAGE
-    : resolveSrc(images[current]);
-  const [isModalOpen, setIsModalOpen] = useState(false);
-
-  const openModal = () => setIsModalOpen(true);
-  const closeModal = () => setIsModalOpen(false);
-
   return (
     <div className="image-slider">
       <img
-        src={encodeURI(src)}
+        src={images[current]}
         alt="product"
         className="slider-image"
-        onError={(e) => handleError(current, e)}
-        referrerPolicy="no-referrer"
-        crossOrigin="anonymous"
-        onClick={openModal}
-        style={{ cursor: "pointer" }}
+        onClick={() => setIsModalOpen(true)}
       />
-
-      {isModalOpen && (
-        <div
-          className="image-modal"
-          onClick={closeModal}
-          role="dialog"
-          aria-modal="true"
-        >
-          <div
-            className="image-modal-content"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <button
-              className="image-modal-close"
-              onClick={closeModal}
-              aria-label="Close"
-            >
-              ×
-            </button>
-            <img
-              src={encodeURI(resolveSrc(images[current]))}
-              alt="full product"
-              className="image-modal-img"
-            />
-          </div>
+      {images.length > 1 && (
+        <div className="slider-dots">
+          {images.map((_, index) => (
+            <span key={index} className={index === current ? 'dot active' : 'dot'}></span>
+          ))}
         </div>
       )}
-      {images.length > 1 && (
-        <>
-          <button type="button" className="slider-btn prev" onClick={goPrev}>
-            ‹
-          </button>
-          <button type="button" className="slider-btn next" onClick={goNext}>
-            ›
-          </button>
-          <div className="slider-dots">
-            {images.map((_, index) => (
-              <span
-                key={index}
-                className={index === current ? "dot active" : "dot"}
-                onClick={() => setCurrent(index)}
-              ></span>
-            ))}
+
+      {isModalOpen && (
+        <div className="image-modal" onClick={() => setIsModalOpen(false)}>
+          <div className="image-modal-content" onClick={(e) => e.stopPropagation()}>
+            <button className="image-modal-close" onClick={() => setIsModalOpen(false)}>×</button>
+            <img src={images[current]} alt="full product" className="image-modal-img" />
           </div>
-        </>
+        </div>
       )}
     </div>
   );

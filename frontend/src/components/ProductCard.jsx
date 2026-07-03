@@ -1,6 +1,6 @@
-import ImageSlider from "./ImageSlider";
+import ImageSlider from './ImageSlider';
 
-function ProductCard({ product, onEdit, onDelete, onCartToggle, isInCart }) {
+function ProductCard({ product, onEdit, onDelete, onAddToCart }) {
   return (
     <div className="product-card">
       <ImageSlider images={product.images} />
@@ -12,11 +12,7 @@ function ProductCard({ product, onEdit, onDelete, onCartToggle, isInCart }) {
         <div className="card-actions">
           <button onClick={() => onEdit(product)}>Edit</button>
           <button onClick={() => onDelete(product._id)}>Delete</button>
-          {onCartToggle && (
-            <button onClick={() => onCartToggle(product)}>
-              {isInCart ? "Remove from Cart" : "Add to Cart"}
-            </button>
-          )}
+          {onAddToCart && <button onClick={() => onAddToCart(product)}>Add to Cart</button>}
         </div>
       </div>
     </div>

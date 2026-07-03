@@ -1,13 +1,7 @@
-import axios from "axios";
+import axios from 'axios';
 
-const envApiUrl = import.meta.env.VITE_API_URL?.trim().replace(/\/$/, "");
-const apiBase =
-  envApiUrl ||
-  (import.meta.env.DEV && typeof window !== "undefined"
-    ? window.location.origin
-    : "https://crud-application-yhki.onrender.com");
-const API_URL = `${apiBase}/api/products`;
-const UPLOAD_URL = `${apiBase}/api/upload`;
+const API_URL = 'http://localhost:5000/api/products';
+const UPLOAD_URL = 'http://localhost:5000/api/upload';
 
 export const getAllProducts = async () => {
   const response = await axios.get(API_URL);
@@ -29,7 +23,15 @@ export const deleteProduct = async (id) => {
   return response.data;
 };
 
-export const uploadImages = async (formData) => {
-  const response = await axios.post(UPLOAD_URL, formData);
-  return response.data; // array of urls
+export const uploadImages = async (files) => {
+  const formData = new FormData();
+  files.forEach((file) => {
+    formData.append('images', file);
+  });
+
+  const response = await axios.post(UPLOAD_URL, formData, {
+    headers: { 'Content-Type': 'multipart/form-data' }
+  });
+
+  return response.data;
 };
