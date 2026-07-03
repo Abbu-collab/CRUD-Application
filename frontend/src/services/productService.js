@@ -1,6 +1,9 @@
 import axios from "axios";
 
-const apiBase = import.meta.env.VITE_API_URL?.trim().replace(/\/$/, "") || "";
+const envApiUrl = import.meta.env.VITE_API_URL?.trim().replace(/\/$/, "") || "";
+const apiBase =
+  envApiUrl ||
+  (typeof window !== "undefined" ? window.location.origin : "");
 const API_URL = `${apiBase}/api/products`;
 const UPLOAD_URL = `${apiBase}/api/upload`;
 
