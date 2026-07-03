@@ -1,9 +1,11 @@
 import axios from "axios";
 
-const envApiUrl = import.meta.env.VITE_API_URL?.trim().replace(/\/$/, "") || "";
+const envApiUrl = import.meta.env.VITE_API_URL?.trim().replace(/\/$/, "");
 const apiBase =
   envApiUrl ||
-  (typeof window !== "undefined" ? window.location.origin : "");
+  (import.meta.env.DEV && typeof window !== "undefined"
+    ? window.location.origin
+    : "https://crud-application-yhki.onrender.com");
 const API_URL = `${apiBase}/api/products`;
 const UPLOAD_URL = `${apiBase}/api/upload`;
 
