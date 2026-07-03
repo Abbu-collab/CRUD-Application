@@ -1,6 +1,8 @@
 import { useState } from "react";
 
-const BACKEND_BASE = "http://localhost:5000/";
+const envBackend = import.meta.env.VITE_API_URL?.trim().replace(/\/$/, "");
+const BACKEND_BASE = envBackend ||
+  (typeof window !== "undefined" ? window.location.origin : "http://localhost:5000");
 const FALLBACK_IMAGE = "https://via.placeholder.com/300?text=No+Image";
 
 function ImageSlider({ images }) {
